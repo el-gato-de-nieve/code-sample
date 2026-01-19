@@ -21,16 +21,14 @@ export class ResourceMappingService {
     return this.transformData(originResourceContent, mapping) as Promise<ResourceContent>;
   }
 
-  /**
-   * Основная логика трансформации данных по схеме
-   */
+ 
   public async transformData(
     source: PlainObject,
     mapping: ResourceMappingEntity,
   ): Promise<PlainObject> {
     const target: PlainObject = {};
 
-    // Оптимизация: получаем схему ОДИН раз для всех полей
+
     const resourceSchema = await this.resourceService.getResourceSchemaVersionByKey(
       mapping.targetSchema.key,
     );
@@ -54,14 +52,10 @@ export class ResourceMappingService {
     return target;
   }
 
-  /**
-   * Слияние контента с приоритетом исходного объекта
-   */
   public merge(content: ResourceContent, additionalContent: ResourceContent): ResourceContent {
     return this.deepMergeSafe(content as PlainObject, additionalContent as PlainObject) as ResourceContent;
   }
 
-  // --- Приватные утилиты ---
 
   private castValue(value: unknown, type?: string): unknown {
     if (type === 'string' && value !== null) return String(value);
@@ -100,7 +94,6 @@ export class ResourceMappingService {
     for (const key of keys) {
       if (!current) return undefined;
 
-      // Логика обхода JSON Schema (properties или items для массивов)
       if (current.properties?.[key]) {
         current = current.properties[key];
       } else if (key.includes('[')) {
